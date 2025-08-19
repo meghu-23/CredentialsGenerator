@@ -1,68 +1,54 @@
 package erp;
 import java.util.*;
-
 public class CredentialsGenerator {
-    
-    public static String generateEmail(String first, String last, String department) {
-        return first.toLowerCase() + last.toLowerCase() + "@" + department + ".skit.ac.in";
+       public static String generateEmail(String firstName, String lastName, String department) {
+        return firstName.toLowerCase() + lastName.toLowerCase() + "@" + department.toLowerCase() + ".skit.ac.in";
     }
-    
     public static String generatePassword(int length) {
-        String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String lower = "abcdefghijklmnopqrstuvwxyz";
-        String digits = "0123456789";
-        String special = "!@#$%^&*()_+";
-        String allChars = upper + lower + digits + special;
+        String capitalLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String smallLetters = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String specialChars = "!@#$%^&*()-_=+<>?";
 
+        String values = capitalLetters + smallLetters + numbers + specialChars;
         Random random = new Random();
-        StringBuilder password = new StringBuilder();
+        char[] password = new char[length];
 
-        password.append(upper.charAt(random.nextInt(upper.length())));
-        password.append(lower.charAt(random.nextInt(lower.length())));
-        password.append(digits.charAt(random.nextInt(digits.length())));
-        password.append(special.charAt(random.nextInt(special.length())));
-
-        for (int i = 4; i < length; i++) {
-            password.append(allChars.charAt(random.nextInt(allChars.length())));
+        for (int i = 0; i < length; i++) {
+            password[i] = values.charAt(random.nextInt(values.length()));
         }
-
-        List<Character> chars = new ArrayList<>();
-        for (char c : password.toString().toCharArray()) chars.add(c);
-        Collections.shuffle(chars);
-
-        StringBuilder finalPassword = new StringBuilder();
-        for (char c : chars) finalPassword.append(c);
-
-        return finalPassword.toString();
+        return new String(password);
     }
-
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-
         System.out.print("Enter First Name: ");
-        String first = sc.next();
+        String firstName = sc.nextLine();
         System.out.print("Enter Last Name: ");
-        String last = sc.next();
+        String lastName = sc.nextLine();
 
-        String[] departments = {"cse","ise","aiml","mechanical"};
-        System.out.println("Choose Department:");
-        for (int i = 0; i < departments.length; i++) {
-            System.out.println((i+1) + ". " + departments[i].toUpperCase());
+        System.out.println("Departments:");
+        System.out.println("1. Technical");
+        System.out.println("2. Admin");
+        System.out.println("3. Human Resources");
+        System.out.println("4. Legal");
+        System.out.print("Enter choice : ");
+        int choice = sc.nextInt();
+
+        String department = "";
+        switch (choice) {
+            case 1: department = "tech"; break;
+            case 2: department = "admin"; break;
+            case 3: department = "hr"; break;
+            case 4: department = "legal"; break;
+            default: System.out.println("Invalid choice!"); return;
         }
 
-        int choice = sc.nextInt();
-        String department = (choice >= 1 && choice <= departments.length) 
-                            ? departments[choice-1] 
-                            : "general";
+        String email = generateEmail(firstName, lastName, department);
+        String password = generatePassword(10);
 
-        String email = generateEmail(first, last, department);
-        String password = generatePassword(8);
-
-        System.out.println("\nGenerated Credentials:");
-        System.out.println("Email    --> " + email);
-        System.out.println("Password --> " + password);
-
+        System.out.println("\n--- Generated Credentials ---");
+        System.out.println("Email ID : " + email);
+        System.out.println("Password : " + password);
         sc.close();
     }
 }
-
